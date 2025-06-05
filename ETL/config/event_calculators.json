@@ -1,0 +1,14 @@
+{
+  "acolhimento": "event_calculators.acolhimento.AcolhimentoCalculator",
+  "registro": "event_calculators.registro.RegistroCalculator",
+  "inicio_classificacao": "event_calculators.classificacao.InicioClassificacaoCalculator",
+  "fim_classificacao": "event_calculators.classificacao.FimClassificacaoCalculator",
+  "inicio_consulta1": "event_calculators.consulta.InicioConsulta1Calculator",
+  "fim_consulta1": "event_calculators.consulta.FimConsulta1Calculator",
+  "inicio_consulta2": "event_calculators.consulta.InicioConsulta2Calculator",
+  "fim_consulta2": "event_calculators.consulta.FimConsulta2Calculator",
+  "exame": "event_calculators.exame.ExameCalculator",
+  "inicio_internacao1": "event_calculators.internacao.Internacao1Calculator",
+  "inicio_internacao2": "event_calculators.internacao.Internacao2Calculator",
+  "alta": "event_calculators.alta.AltaCalculator"
+}

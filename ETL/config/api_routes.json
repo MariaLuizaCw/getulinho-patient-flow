@@ -1,0 +1,69 @@
+
+[
+    {
+        "route": "api/v1/acolhimento/listAll",
+        "table_name": "acolhimento",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/ehr/v1/alergias/fromDate",
+        "table_name": "alergias",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/v1/atendimento/listAll",
+        "table_name": "atendimentopacientes",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/v1/boletim/listAll",
+        "table_name": "boletim",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/v1/classificacaorisco/listAll",
+        "table_name": "classificacaorisco",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/v1/diagnostico/listAll",
+        "table_name": "diagnostico",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/ehr/v1/episodio/fromDate",
+        "table_name": "episodio",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/ehr/v1/exames/fromDate",
+        "table_name": "exames",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/v1/pacientes/fromDate",
+        "table_name": "pacientes",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/ehr/v1/prescricaoMedicamentos/fromDate",
+        "table_name": "prescricaomedicamentos",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/ehr/v1/prescricoes/fromDate",
+        "table_name": "prescricoes",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/ehr/v1/dispensacaoMedicamentos/fromDate",
+        "table_name": "dispensacaomedicamentos",
+        "params": {"data": "01/05/2025 00:00:00"}
+    },
+    {
+        "route": "api/ehr/v1/sinaisvitais/fromDate",
+        "table_name": "sinaisvitais",
+        "params": {"data": "01/05/2025 00:00:00"}
+    }
+
+]

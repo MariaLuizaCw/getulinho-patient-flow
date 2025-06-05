@@ -1,0 +1,33 @@
+[
+  {
+    "table_name": "events_last_4h",
+    "class_name": "delta_calculators.delta_by_hour.DeltaByHour",
+    "cron": "20 * * * *",
+    "function_params": {
+      "last_x_hours": 4
+    }
+  },
+  {
+    "table_name": "events_last_24h",
+    "class_name": "delta_calculators.delta_by_hour.DeltaByHour",
+    "cron": "20 * * * *",
+    "function_params": {
+      "last_x_hours": 24
+    }
+  },
+  {
+    "table_name": "events_day",
+    "class_name": "delta_calculators.delta_by_day.DeltaByDay",
+    "cron": "30 0 * * *"
+  },
+  {
+    "table_name": "events_month",
+    "class_name": "delta_calculators.delta_by_month.DeltaByMonth",
+    "cron": "30 0 1,15 * *"
+  },
+  {
+    "table_name": "events_by_year",
+    "class_name": "delta_calculators.delta_by_year.DeltaByYear",
+    "cron": "20 * * * *"
+  }
+]

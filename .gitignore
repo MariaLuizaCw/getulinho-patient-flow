@@ -1,0 +1,70 @@
+# Python
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+*.log
+*.sqlite3
+
+# Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Airflow
+ETL/logs/
+ETL/dags/__pycache__/
+ETL/plugins/__pycache__/
+ETL/modules/__pycache__/
+ETL/__pycache__/
+.airflow/
+
+# Docker
+*.pid
+*.tar
+*.gz
+*.bak
+*.swp
+*.tmp
+*.lock
+docker-compose.override.yml
+
+# Data & dumps
+**/backup/
+**/data/
+**/*.dump
+**/*.bak
+
+# Secrets & configs
+.env
+*.env
+**/config/*.secret.*
+**/config/*.env
+**/config/*.key
+**/config/.secrets/
+
+# Streamlit
+frontend/.streamlit/config.toml
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+*.whl
+
+# Pyvis & Streamlit temp HTMLs
+*.html
+*.draw
+*.dot.draw
+frontend/src/__pycache__/
+
+# Jupyter (se aplicável futuramente)
+.ipynb_checkpoints/
+
+# Database config
+**/config/pg_hba.conf
+**/config/postgresql.conf

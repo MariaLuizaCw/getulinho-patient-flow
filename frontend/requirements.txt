@@ -1,0 +1,11 @@
+graphviz
+sqlalchemy
+pandas
+flask
+streamlit
+pyvis
+psycopg2
+streamlit-plotly-events
+plotly
+networkx
+streamlit_javascript

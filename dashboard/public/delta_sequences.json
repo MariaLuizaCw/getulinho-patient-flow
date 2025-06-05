@@ -1,0 +1,125 @@
+[
+  {
+    "delta_name": "delta_acolhimento_registro",
+    "type": "between",
+    "start_event": "acolhimento",
+    "end_event": "registro",
+    "display_name_start": "Acolhimento",
+    "display_name_end": "Registro",
+    "start_x": 0,
+    "start_y": 0,
+    "end_x": 100,
+    "end_y": 0
+  },
+  {
+    "delta_name": "delta_registro_inicio_classificacao",
+    "type": "between",
+    "start_event": "registro",
+    "end_event": "inicio_classificacao",
+    "display_name_start": "Registro",
+    "display_name_end": "Classificação de Risco",
+    "end_x": 200,
+    "end_y": 0
+  },
+  {
+    "delta_name": "delta_inicio_classificacao_fim_classificacao",
+    "type": "box",
+    "start_event": "inicio_classificacao",
+    "end_event": "fim_classificacao",
+    "display_name": "Classificação de Risco"
+  },
+  {
+    "delta_name": "delta_fim_classificacao_inicio_consulta1",
+    "type": "between",
+    "start_event": "fim_classificacao",
+    "end_event": "inicio_consulta1",
+    "display_name_start": "Classificação de Risco",
+    "display_name_end": "Primeira Consulta",
+    "end_x": 300,
+    "end_y": 0
+  },
+  {
+    "delta_name": "delta_inicio_consulta1_fim_consulta1",
+    "type": "box",
+    "start_event": "inicio_consulta1",
+    "end_event": "fim_consulta1",
+    "display_name": "Primeira Consulta"
+  },
+  {
+    "delta_name": "delta_fim_consulta1_exame",
+    "type": "between",
+    "start_event": "fim_consulta1",
+    "end_event": "exame",
+    "display_name_start": "Primeira Consulta",
+    "display_name_end": "Exame",
+    "end_x": 400,
+    "end_y": -10
+  },
+  {
+    "delta_name": "delta_fim_consulta1_inicio_internacao1",
+    "type": "between",
+    "start_event": "fim_consulta1",
+    "end_event": "inicio_internacao1",
+    "display_name_start": "Primeira Consulta",
+    "display_name_end": "Internação 1",
+    "end_x": 500,
+    "end_y": 10
+  },
+  {
+    "delta_name": "delta_fim_consulta1_inicio_consulta2",
+    "type": "between",
+    "start_event": "fim_consulta1",
+    "end_event": "inicio_consulta2",
+    "display_name_start": "Primeira Consulta",
+    "display_name_end": "Segunda Consulta",
+    "end_x": 600,
+    "end_y": 0
+  },
+  {
+    "delta_name": "delta_exame_inicio_consulta2",
+    "type": "between",
+    "start_event": "exame",
+    "end_event": "inicio_consulta2",
+    "display_name_start": "Exame",
+    "display_name_end": "Segunda Consulta",
+    "end_x": 600,
+    "end_y": 0
+  },
+  {
+    "delta_name": "delta_inicio_consulta2_fim_consulta2",
+    "type": "box",
+    "start_event": "inicio_consulta2",
+    "end_event": "fim_consulta2",
+    "display_name": "Segunda Consulta"
+  },
+  {
+    "delta_name": "delta_fim_consulta2_inicio_internacao2",
+    "type": "between",
+    "start_event": "fim_consulta2",
+    "end_event": "inicio_internacao2",
+    "display_name_start": "Segunda Consulta",
+    "display_name_end": "Internação 2",
+    "end_x": 700,
+    "end_y": 0
+  },
+  {
+    "delta_name": "delta_inicio_internacao1_alta",
+    "type": "between",
+    "start_event": "inicio_internacao1",
+    "end_event": "alta",
+    "display_name_start": "Internação 1",
+    "display_name_end": "Alta 1",
+    "end_x": 600,
+    "end_y": 10
+  },
+  {
+    "delta_name": "delta_inicio_internacao2_alta",
+    "type": "between",
+    "start_event": "inicio_internacao2",
+    "end_event": "alta",
+    "display_name_start": "Internação 2",
+    "display_name_end": "Alta 2",
+    "end_x": 800,
+    "end_y": 0
+  }
+]

@@ -1,0 +1,210 @@
+digraph fluxo {
+    rankdir=LR;
+    compound=true;
+    ranksep=0.5;
+
+    // Primeiro Atendimento
+    subgraph cluster_primeiro_atendimento {
+        label="Primeiro Atendimento";
+        ranksep=0.2;
+        margin=15;
+        style=filled;
+        fillcolor="#F5F5F5";
+        fontname="Arial";
+        rankdir=LR;
+
+        node [shape=box, style="filled, rounded", fillcolor="white", fontname="Arial"];
+
+        Entrada [label="Entrada", color="#88E788", penwidth=2];
+        Acolhimento [label="Acolhimento", color="#88E788", penwidth=2];
+        Estabilizacao [label="Estabilização", color="#88E788", penwidth=2];
+        Registro [label="Registro", color="#88E788", penwidth=2];
+
+        // Subcluster de Classificação
+        subgraph cluster_classificacao {
+            style=invis;
+            rankdir=TB;
+            Classificacao [label="Classificação de Risco", color="#88E788", penwidth=2];
+            aux_classif [
+                label="Δt3 ± x",
+                shape=box,
+                style="filled",
+                fillcolor="#F5F5F5",
+                color="#F5F5F5",
+                fontname="times-roman",
+                fontsize=16,
+                penwidth=0
+            ];
+        }
+
+        // Subcluster de Consulta
+        subgraph cluster_consulta {
+            style=invis;
+            rankdir=TB;
+            Consulta [label="Consulta", color="#88E788", penwidth=2];
+            aux_consulta [
+                label="Δt5 ± x",
+                shape=box,
+                style="filled",
+                fillcolor="#F5F5F5",
+                color="#F5F5F5",
+                fontname="times-roman",
+                fontsize=16,
+                penwidth=0
+            ];
+        }
+    }
+
+    // Desfecho 1
+    subgraph cluster_desfecho1 {
+        margin=13;
+        label="Desfecho 1";
+        style=filled;
+        fillcolor="#F5F5F5";
+        fontname="Arial";
+        rankdir=LR;
+
+        node [shape=box, style="filled, rounded", fillcolor="white", fontname="Arial"];
+
+        Exames [label="Exames", color="#88E788", penwidth=2];
+
+        // Subcluster de Internação
+        subgraph cluster_internacao {
+            style=invis;
+            rankdir=TB;
+            Internacao [label="Internação", color="#88E788", penwidth=2];
+            aux_internacao [
+                label="Δt7 ± x",
+                shape=box,
+                style="filled",
+                fillcolor="#F5F5F5",
+                color="#F5F5F5",
+                fontname="times-roman",
+                fontsize=16,
+                penwidth=0
+            ];
+        }
+
+        Obito [label="Óbito", color="#b22222", penwidth=2];
+    }
+
+    // Consulta de Revisão
+    subgraph cluster_revisao {
+        label="Consulta de Revisão";
+        margin=8;
+        style=filled;
+        fillcolor="#F5F5F5";
+        fontname="Arial";
+        rankdir=LR;
+
+        node [shape=box, style="filled, rounded", fillcolor="white", fontname="Arial"];
+
+        // Subcluster de Consulta2
+        subgraph cluster_consulta2 {
+            style=invis;
+            rankdir=TB;
+            Consulta2 [label="Consulta", color="#88E788", penwidth=2];
+            aux_consulta2 [
+                label="Δt9 ± x",
+                shape=box,
+                style="filled",
+                fillcolor="#F5F5F5",
+                color="#F5F5F5",
+                fontname="times-roman",
+                fontsize=16,
+                penwidth=0
+            ];
+        }
+    }
+
+    // Desfecho 2
+    subgraph cluster_desfecho2 {
+        label="Desfecho 2";
+        margin=13;
+        style=filled;
+        fillcolor="#F5F5F5";
+        fontname="Arial";
+        rankdir=LR;
+
+        node [shape=box, style="filled, rounded", fillcolor="white", fontname="Arial"];
+
+        Obito2 [label="Óbito", color="#b22222", penwidth=2];
+
+        // Subcluster de Internacao2
+        subgraph cluster_internacao2 {
+            style=invis;
+            rankdir=TB;
+            Internacao2 [label="Internação", color="#88E788", penwidth=2];
+            aux_internacao2 [
+                label="Δt11 ± x",
+                shape=box,
+                style="filled",
+                fillcolor="#F5F5F5",
+                color="#F5F5F5",
+                fontname="times-roman",
+                fontsize=16,
+                penwidth=0
+            ];
+        }
+    }
+
+    // Desfecho 3
+    subgraph cluster_desfecho3 {
+        margin=18;
+        ranksep=1;
+        label="Desfecho 3";
+        style=filled;
+        fillcolor="#F5F5F5";
+        fontname="Arial";
+        rankdir=LR;
+
+        node [shape=box, style="filled, rounded", fillcolor="white", fontname="Arial"];
+
+        Transferencia3 [label="Transferência", color="#b22222", penwidth=2];
+        Obito3 [label="Óbito", color="#b22222", penwidth=2];
+        AltaHospitalar3 [label="Alta Hospitalar", color="#b22222", penwidth=2];
+
+    }
+
+    // Conexões
+    Entrada -> Acolhimento;
+    Acolhimento -> Estabilizacao;
+    Acolhimento -> Registro [label="Δt1 ± x"];
+    Registro -> Classificacao [label="Δt2 ± x"];
+
+    // Loop de classificação
+    Classificacao -> aux_classif [arrowhead=none, tailport=sw, headport=center, constraint=false, dir=none];
+    aux_classif -> Classificacao [arrowhead=none, tailport=center, headport=se, constraint=false, dir=none];
+
+    Classificacao -> Consulta [label="Δt4 ± x"];
+
+    // Loop de consulta
+    Consulta -> aux_consulta [arrowhead=none, tailport=sw, headport=center, constraint=false, dir=none];
+    aux_consulta -> Consulta [arrowhead=none, tailport=center, headport=se, constraint=false, dir=none];
+
+    Consulta -> Exames [label="Δt6.1 ± x"];
+    Consulta -> Internacao [label="Δt6.2 ± x"];
+
+    // Loop de internacao
+    Internacao -> aux_internacao [arrowhead=none, tailport=sw, headport=center, constraint=false, dir=none];
+    aux_internacao -> Internacao [arrowhead=none, tailport=center, headport=se, constraint=false, dir=none];
+
+    Consulta -> Obito;
+
+    Exames -> Consulta2 [label="Δt8 ± x"];
+
+    // Loop de consulta2
+    Consulta2 -> aux_consulta2 [arrowhead=none, tailport=sw, headport=center, constraint=false, dir=none];
+    aux_consulta2 -> Consulta2 [arrowhead=none, tailport=center, headport=se, constraint=false, dir=none];
+
+    Consulta2 -> Obito2;
+    Consulta2 -> Internacao2 [label="Δt10 ± x"];
+
+    // Loop de internacao2
+    Internacao2 -> aux_internacao2 [arrowhead=none, tailport=sw, headport=center, constraint=false, dir=none];
+    aux_internacao2 -> Internacao2 [arrowhead=none, tailport=center, headport=se, constraint=false, dir=none];
+
+    Internacao2 -> Transferencia3 [label="Δt12.1 ± x"];
+    Internacao2 -> Obito3 [label="Δt12.2 ± x"];
+    Internacao2 -> AltaHospitalar3 [label="Δt12.3 ± x"];
+}

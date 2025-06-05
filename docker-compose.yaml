@@ -1,0 +1,124 @@
+version: '3.8'
+
+x-airflow-common:
+  &airflow-common
+  build:
+    context: ./ETL
+  environment:
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    - AIRFLOW__CORE__SQL_ALCHEMY_CONN=${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
+    - AIRFLOW__CORE__FERNET_KEY=${AIRFLOW__CORE__FERNET_KEY}
+    - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
+    - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    - AIRFLOW__CORE__LOGGING_LEVEL=INFO
+    - AIRFLOW_CONN_POSTGRES_MASTER=${AIRFLOW_CONN_POSTGRES_MASTER}
+    - APIS=${APIS}
+    - BEARER_TOKEN=${BEARER_TOKEN} 
+    - POSTGRES_USER=${POSTGRES_USER}
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    - POSTGRES_DB=${POSTGRES_DB}
+    - PYTHONPATH=/opt/airflow/modules
+    - AIRFLOW__CORE__DEFAULT_TIMEZONE=America/Sao_Paulo
+    - AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE=America/Sao_Paulo
+  volumes:
+    - ./ETL/dags:/opt/airflow/dags            # DAGs visíveis pelo scheduler e webserver
+    - ./ETL/logs:/opt/airflow/logs            # Logs persistentes
+    - ./ETL/plugins:/opt/airflow/plugins      # Plugins e hooks customizados
+    - ./ETL/modules:/opt/airflow/modules      # (opcional) Código auxiliar fora da pasta DAG
+    - ./ETL/config:/opt/airflow/config 
+    - ./common_settings:/opt/airflow/common_settings 
+  depends_on:
+    - postgres
+  networks:
+    - main
+
+services:
+  postgres:
+    build:
+      context: ./database
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    
+    volumes:
+      - ./database/config/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./database/data:/var/lib/postgresql/data
+      - ./database/backup:/backup
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    networks:
+      - main
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${STREAMLIT_PORT}:8501"
+    environment:
+      - STREAMLIT_PORT=${STREAMLIT_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    volumes: 
+      - ./common_settings:/common_settings
+      - ./frontend:/app
+    command: streamlit run ./src/app.py --server.port=$STREAMLIT_PORT --server.address=0.0.0.0
+    networks:
+      - main
+
+  airflow-init:
+    << : *airflow-common
+    container_name: airflow_init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate && \
+        airflow users create \
+          --role Admin \
+          --username airflow \
+          --password airflow \
+          --email airflow@airflow.com \
+          --firstname airflow \
+          --lastname airflow
+    restart: on-failure
+    networks:
+      - main
+
+  airflow-webserver:
+    << : *airflow-common
+    command: airflow webserver
+    ports:
+      - 8080:8080
+    container_name: airflow_webserver
+    restart: always
+    networks:
+      - main
+
+  airflow-scheduler:
+    << : *airflow-common
+    command: airflow scheduler
+    container_name: airflow_scheduler
+    networks:
+      - main
+  
+  dashboard-dev:
+    build:
+      context: ./dashboard
+      dockerfile: ./docker/Dockerfile.dev
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./common_settings:/common_settings
+      - ./dashboard:/app
+      - ./dashboard/node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+
+networks:
+  main:
+    driver: bridge
