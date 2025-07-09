@@ -7,3 +7,8 @@
 .v-application [class*="text-"] {
   font-family: 'Source Sans Pro', sans-serif !important;
 }
+
+
+.v-container {
+  max-width: 95% !important;
+}

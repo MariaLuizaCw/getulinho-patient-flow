@@ -1,23 +1,43 @@
 <template>
   <v-container>
     <v-container>
-        <div class="text-h4 font-weight-black">
+      <div class="text-h4 font-weight-black">
         Lasos FluxoSaúde: Painel de Monitoramento Inteligente do Fluxo Hospitalar
-    </div>
+      </div>
 
-    <div class="text-subtitle-1 mt-4">
-        Dados entre
-        <span class="text-primary font-weight-medium">2025-05-30 17:00:00</span>
-        e
-        <span class="text-primary font-weight-medium">2025-05-30 21:00:00</span>
-    </div>
+      <div class="text-subtitle-1">
+        Receba o emitido do painel de filtros e envie para o fluxo
+      </div>
+
+      <FiltersPanel @filters-changed="updateFilters" />  <!-- Ouve o evento 'filters-changed' -->
     </v-container>
+
     <v-container>
-        <FiltersPanel />
-        
-    </v-container>
-    <v-container>
-        <Flow />
+      <Flow :filters="filters" />  <!-- Passa os filtros para o Flow -->
     </v-container>
   </v-container>
 </template>
+
+<script>
+import FiltersPanel from '~/components/FiltersPanel.vue'
+import Flow from '~/components/Flow.vue'
+
+
+export default {
+  components: {
+    FiltersPanel,
+    Flow
+  },
+  data() {
+    return {
+      filters: {}  // Filtros que serão passados para o Flow
+    }
+  },
+  methods: {
+    updateFilters(filters) {
+      this.filters = filters
+      console.log('Updated filters:', filters)
+    }
+  }
+}
+</script>

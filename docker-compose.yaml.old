@@ -55,14 +55,32 @@ services:
     image: postgrest/postgrest:latest
     environment:
       - PGRST_DB_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
-      - PGRST_DB_ANON_ROLE=app_user
+      - PGRST_DB_ANON_ROLE=web_anon
       - PGRST_DB_SCHEMA=public
       - PGRST_SERVER_HOST=0.0.0.0
       - PGRST_SERVER_PORT=3000
     ports:
-      - "${POSTGREST_PORT}:3000"  # PostgREST estará acessível na porta 3000
+      - "${POSTREST_PORT}:3000"  # PostgREST estará acessível na porta 3000
     depends_on:
       - postgres
+    networks:
+      - main
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${STREAMLIT_PORT}:8501"
+    environment:
+      - STREAMLIT_PORT=${STREAMLIT_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    volumes: 
+      - ./common_settings:/common_settings
+      - ./frontend:/app
+    command: streamlit run ./src/app.py --server.port=$STREAMLIT_PORT --server.address=0.0.0.0
     networks:
       - main
 
@@ -115,10 +133,8 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=5000
-      - POSTGREST_URL=http://postgrest:${POSTGREST_PORT}
     networks:
       - main
-      
 networks:
   main:
     driver: bridge
