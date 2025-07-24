@@ -41,7 +41,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "${VPN_IP}:${POSTGRES_PORT}:5432"
     
     volumes:
       - ./database/config/postgresql.conf:/etc/postgresql/postgresql.conf
@@ -60,7 +60,7 @@ services:
       - PGRST_SERVER_HOST=0.0.0.0
       - PGRST_SERVER_PORT=3000
     ports:
-      - "${POSTGREST_PORT}:3000"  # PostgREST estará acessível na porta 3000
+      - "${VPN_IP}:${POSTGREST_PORT}:3000"  # PostgREST estará acessível na porta 3000
     depends_on:
       - postgres
     networks:
@@ -89,7 +89,7 @@ services:
     << : *airflow-common
     command: airflow webserver
     ports:
-      - ${AIRFLOW_PORT}:8080
+      - "${VPN_IP}:${AIRFLOW_PORT}:8080"
     container_name: airflow_webserver
     restart: always
     networks:
@@ -107,7 +107,7 @@ services:
       context: ./dashboard
       dockerfile: ./docker/Dockerfile.dev
     ports:
-      - "${VUE_PORT}:5000"
+      - "${VPN_IP}:${VUE_PORT}:5000"
     volumes:
       - ./common_settings:/app/public
       - ./dashboard:/app
