@@ -42,11 +42,12 @@ for api in apis:
     op_kwargs = {
         "url": api["route"],
         "table_name": api["table_name"],
+        "title": api["title"],
         "params": api["params"]
     }
 
     task = PythonOperator(
-        task_id=f"update_{api['table_name']}",
+        task_id=f"update_{api['title']}",
         python_callable=run_fetch,
         op_kwargs=op_kwargs,
         dag=dag,

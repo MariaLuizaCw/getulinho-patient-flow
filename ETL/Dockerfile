@@ -16,6 +16,10 @@ ENV TZ=America/Sao_Paulo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN date
 
+
+RUN groupadd -g 1003 int || true && \
+    usermod -aG 1003 airflow
+    
 USER airflow
 
 COPY requirements.txt .

@@ -44,10 +44,8 @@ services:
       - "${VPN_IP}:${POSTGRES_PORT}:5432"
     
     volumes:
-      - ./database/config/postgresql.conf:/etc/postgresql/postgresql.conf
       - ./database/data:/var/lib/postgresql/data
       - ./database/backup:/backup
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
     networks:
       - main
 
@@ -116,6 +114,24 @@ services:
       - NODE_ENV=development
       - PORT=5000
       - POSTGREST_URL=http://postgrest:${POSTGREST_PORT}
+    networks:
+      - main
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${VPN_IP}:${STREAMLIT_PORT}:8501"
+    environment:
+      - STREAMLIT_PORT=${STREAMLIT_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    volumes: 
+      - ./common_settings:/common_settings
+      - ./frontend:/app
+    command: streamlit run ./src/app.py --server.port=$STREAMLIT_PORT --server.address=0.0.0.0
     networks:
       - main
       

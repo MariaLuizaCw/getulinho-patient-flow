@@ -111,15 +111,24 @@ class APIFetcher:
     def fetch_and_insert_data(self, route, table_name, params=None):
         params = params or {}
 
-        # assume fallback_data vem do parâmetro data
-        fallback_data = params.get("data")
-        if not fallback_data:
-            raise ValueError("Parâmetro 'data' obrigatório por enquanto.")
+        # Converte 'auto_update' para booleano se estiver em params
+        raw_auto_update = params.pop("auto_update", False)
+        auto_update = str(raw_auto_update).lower() == "true"
 
-  
-        # Obtém a última data do log
-        ultima_data = self.get_last_datetime(table_name, fallback_data)
+        # fallback_data só é obrigatório se auto_update for False
+        fallback_data = params.get("data")
+        if not fallback_data and not auto_update:
+            raise ValueError("Parâmetro 'data' obrigatório por enquanto, exceto quando 'auto_update' é True.")
+
+        if auto_update:
+            # Usa 00:00 do dia atual
+            ultima_data = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        else:
+            # Obtém a última data do log com base no fallback_data
+            ultima_data = self.get_last_datetime(table_name, fallback_data)
+
         logger.info(f"Last Date: {ultima_data}")
+
         # Atualiza o parâmetro 'data'
         params["data"] = ultima_data.strftime("%d/%m/%Y %H:%M:%S")
 
@@ -140,4 +149,3 @@ class APIFetcher:
             if ultima_data_json:
                 dt = datetime.strptime(ultima_data_json, "%Y-%m-%d %H:%M:%S")
                 update_last_datetime(engine=self.engine, table_name=table_name, report_time=dt)
-        
