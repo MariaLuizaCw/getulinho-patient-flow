@@ -98,9 +98,13 @@ const initialConfigs = vNG.defineConfigs({
     gap: 3,
     type: "straight",
     summarize: true,
+    label: {  // <-- aqui!
+      visible: true,
+      fontSize: 8, // diminua para 2 ou 4
+    },
     summarized: {
       label: {
-        fontSize: 10,
+        fontSize: 2,
         color: "rgb(var(--v-theme-primary))", // Cor do texto da aresta = primary color do Vuetify
       },
       shape: {

@@ -1,4 +1,6 @@
 // filters/filters.js
+import { postgrestFetch } from '~/utils/postgrestFetch.js';
+
 
 export const timeFilters = {};
 
@@ -7,53 +9,42 @@ export function registerTimeFilter(name, fn) {
   timeFilters[name] = fn;
 }
 
-// Funções de filtro específicas
 export async function getLastReportTime(timeTable) {
   try {
-    const response = await fetch(`/get_last_report_time?table_name=${timeTable}`);
-    if (response.ok) {
-      return await response.json(); // Retorna o tempo do último relatório
+    const response = await postgrestFetch(`/last_update_log?table_name=eq.${timeTable}`);
+
+    if (response._status === 200) {
+      return response.data[0].report_time; // já é o JSON retornado pelo PostgREST
     } else {
       console.error('Error fetching last report time');
       return null;
     }
+
   } catch (error) {
     console.error('Error fetching last report time:', error);
     return null;
   }
 }
 
+
 // Filtro para as últimas 4 horas
-export async function filterLast4Hours(queryParams, timeTable) {
+export async function filterLastXHours(queryParams, timeTable, timeComplement) {
   const lastReportTime = await getLastReportTime(timeTable);
   if (lastReportTime) {
-    const fourHoursAgo = new Date(lastReportTime - (4 * 60 * 60 * 1000));
-    queryParams.append('start_interval', `gte.${fourHoursAgo.toISOString()}`);
+    queryParams.append('start_interval', `gte.${lastReportTime}`);
   }
 }
 
-// Filtro para as últimas 24 horas
-export async function filterLast24Hours(queryParams, timeTable) {
-  const lastReportTime = await getLastReportTime(timeTable);
-  if (lastReportTime) {
-    const twentyFourHoursAgo = new Date(lastReportTime - (24 * 60 * 60 * 1000));
-    queryParams.append('start_interval', `gte.${twentyFourHoursAgo.toISOString()}`);
-  }
-}
+
 
 // Filtro para um dia específico
-export async function filterSpecificDay(queryParams, timeComplement, timeTable) {
-  const { day } = timeComplement;
-  const start_dt = new Date(day);
-  const end_dt = new Date(start_dt);
-  end_dt.setDate(start_dt.getDate() + 1);
-
-  queryParams.append('start_interval', `gte.${start_dt.toISOString()}`);
-  queryParams.append('start_interval', `lt.${end_dt.toISOString()}`);
+export async function filterSpecificDay(queryParams, timeTable, timeComplement) {
+  const { day } = timeComplement; // ex: "2025-08-26"
+  console.log(day)
+  queryParams.append('start_interval', `eq.${day}`);
 }
-
 // Filtro para um mês específico
-export async function filterSpecificMonth(queryParams, timeComplement, timeTable) {
+export async function filterSpecificMonth(queryParams, timeTable, timeComplement) {
   const { year, month } = timeComplement;
   const monthNumber = getMonthNumber(month);
   if (year && monthNumber) {
@@ -75,8 +66,8 @@ function getMonthNumber(monthName) {
 
 // Registra os filtros de tempo
 export function registerTimeFilters() {
-  registerTimeFilter('Últimas 4 horas', filterLast4Hours);
-  registerTimeFilter('Últimas 24 horas', filterLast24Hours);
-  registerTimeFilter('Selecionar um dia', filterSpecificDay);
-  registerTimeFilter('Selecionar um mês', filterSpecificMonth);
+  registerTimeFilter('4 horas', filterLastXHours);
+  registerTimeFilter('24 horas', filterLastXHours);
+  registerTimeFilter('Dia', filterSpecificDay);
+  registerTimeFilter('Mês', filterSpecificMonth);
 }

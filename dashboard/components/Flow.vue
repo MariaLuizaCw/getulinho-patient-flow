@@ -148,9 +148,17 @@ import * as vNG from "v-network-graph"
 import { reactive } from 'vue'  // Usando reactive
 import "v-network-graph/lib/style.css"
 import initialConfigs from '../config/networkConfigs'
+import { calculateEdgeTop, calculateEdgeBottom } from '~/utils/flow_functions';
+
 
 export default {
   name: 'FlowDiagram',
+  props: {
+    deltas: {
+      type: Array,
+      default: () => []
+    }
+  },
 
   setup() {
     const configs = reactive(initialConfigs) // Torna o objeto reativo
@@ -181,30 +189,45 @@ export default {
     }
   },
   mounted() {
-
     fetch('/delta_sequences.json')
       .then(res => res.json())
-      .then(data => {
-        let flow = this.genFlow(data);
-
-        this.nodes = flow['nodes'];
-        this.edges = flow['edges'];
-        this.layouts = flow['layouts'];
-
-
-        console.log(this.nodes)
-        console.log(this.edges)
+      .then(flowData => {
+        // Passa o deltas que vem do FiltersPanel
+        const flow = this.genFlow(flowData, this.deltas || []);
+        
+        this.nodes = flow.nodes;
+        this.edges = flow.edges;
+        this.layouts = flow.layouts;
 
 
-      })
+        
+      });
   },
   computed: {
     eventHandlers() {
       return {
-        "node:click": ({ node }) => console.log(`🔵 Nó clicado: ${node}`),
-        "edge:click": ({ edge }) => console.log(`🟠 Aresta clicada: ${edge}`),
-        // "*": (type, event) => console.log(`🟡 Evento qualquer: ${type}`, event)
+        "node:click": ({ node }) => {
+          console.log(`🔵 Nó clicado: ${node}`);
+          this.$emit("node-clicked", node); // Emite para o pai
+        },
+        "edge:click": ({ edge }) => {
+          console.log(`🟠 Aresta clicada: ${edge}`);
+          this.$emit("edge-clicked", edge); // Emite para o pai
+        }
       }
+    }
+  },
+  watch: {
+    deltas(newDeltas) {
+      if (!newDeltas) return;
+      fetch('/delta_sequences.json')
+        .then(res => res.json())
+        .then(flowData => {
+          const flow = this.genFlow(flowData, newDeltas);
+          this.nodes = flow.nodes;
+          this.edges = flow.edges;
+          this.layouts = flow.layouts;
+        });
     }
   },
   methods: {
@@ -223,19 +246,40 @@ export default {
       if (currentLine) lines.push(currentLine.trim());
       return lines.join("\n");
     },
-    genFlow(flowData) {
+    
+    genFlow(flowData, deltas) {
       const nodeMap = new Map();
       const nodes = {};
       const edges = {};
       const layouts = { nodes: {} };
-
+      console.log('do lado do flow:', deltas)
       for (const item of flowData) {
+        if (item.type === 'box') {
+          // Se já existe, deleta antes
+          if (nodeMap.has(item.display_name)) {
+            delete nodes[item.display_name];
+            delete layouts.nodes[item.display_name];
+            nodeMap.delete(item.display_name);
+          }
+
+          // Cria/atualiza o nó
+          nodes[item.display_name] = {
+            name: item.display_name,
+            labelAbove: calculateEdgeTop(deltas, item.delta_name),
+            labelBelow: calculateEdgeBottom(deltas, item.delta_name),
+          };
+          layouts.nodes[item.display_name] = {
+            x: item.start_x || 0,
+            y: item.start_y || 0
+          };
+          nodeMap.set(item.display_name, true);
+        }
         if (item.type === 'between') {
           if (!nodeMap.has(item.display_name_start)) {
             nodes[item.display_name_start] = {
               name: item.display_name_start,
-              labelAbove: 'teste',
-              labelBelow: 'teste2',
+              labelAbove: '',
+              labelBelow: '',
             };
             layouts.nodes[item.display_name_start] = {
               x: item.start_x || 0,
@@ -248,7 +292,7 @@ export default {
             nodes[item.display_name_end] = {
               name: item.display_name_end,
               labelAbove: '',
-              labelBelow: 'teste2',
+              labelBelow: '',
             };
             layouts.nodes[item.display_name_end] = {
               x: item.end_x || 0,
@@ -257,28 +301,15 @@ export default {
             nodeMap.set(item.display_name_end, true);
           }
 
-          edges[`${item.display_name_start} ${item.display_name_end}`] = {
+          edges[`${JSON.stringify(item)}`] = {
             source: item.display_name_start,
             target: item.display_name_end,
-            labelAbove: 'teste',
-            labelBelow: 'teste2'
+            labelAbove: calculateEdgeTop(deltas, item.delta_name),
+            labelBelow: calculateEdgeBottom(deltas, item.delta_name)
           };
         }
 
-        if (item.type === 'box') {
-          if (!nodeMap.has(item.display_name)) {
-            nodes[item.display_name] = {
-              name: item.display_name,
-              labelAbove: 'teste',
-              labelBelow: 'teste2',
-            };
-            layouts.nodes[item.display_name] = {
-              x: item.start_x || 0,
-              y: item.start_y || 0
-            };
-            nodeMap.set(item.display_name, true);
-          }
-        }
+        
       }
 
       return { nodes, edges, layouts };
@@ -291,7 +322,7 @@ export default {
 .graph-container {
   width: 100%;
   /* Ocupa toda a largura disponível */
-  height: 400px;
+  height: 300px;
   /* Ajuste a altura para o valor desejado, ex: 800px */
 }
 </style>

@@ -14,18 +14,25 @@
 <script>
 export default {
   name: 'RiskFilter',
-
+  props: {
+    defaultRisks: {
+      type: Array,
+      default: () => ["Azul", "Verde", "Amarelo", "Vermelho", "Indefinido"]
+    }
+  },
   data() {
     return {
       riskClasses: ["Azul", "Verde", "Amarelo", "Vermelho", "Indefinido"],
-      selectedRisks: ["Azul", "Verde", "Amarelo", "Vermelho", "Indefinido"]
+      selectedRisks: this.defaultRisks
     }
   },
-
   methods: {
     emitSelection() {
-      this.$emit('change', this.selectedRisks)
+      this.$emit('filters-changed', { risks: this.selectedRisks });
     }
+  },
+  mounted() {
+    this.emitSelection(); // envia valor inicial para o pai
   }
 }
 </script>
