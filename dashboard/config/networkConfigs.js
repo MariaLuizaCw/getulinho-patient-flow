@@ -7,8 +7,10 @@ const initialConfigs = vNG.defineConfigs({
     view: {
     scalingObjects: true,
     minZoomLevel: 1.5,
-    maxZoomLevel: 16,
+    maxZoomLevel: 16,                    // desativa zoom
     autoPanAndZoomOnLoad: "center-content",
+    mouseWheelZoomEnabled: false,
+    panEnabled: false
     // autoPanOnResize: true
   },
   node: {

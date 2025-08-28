@@ -47,11 +47,12 @@ export async function filterSpecificDay(queryParams, timeTable, timeComplement) 
 export async function filterSpecificMonth(queryParams, timeTable, timeComplement) {
   const { year, month } = timeComplement;
   const monthNumber = getMonthNumber(month);
+
   if (year && monthNumber) {
-    const start_dt = new Date(year, monthNumber - 1, 1);
-    const end_dt = new Date(year, monthNumber, 1);
-    queryParams.append('start_interval', `gte.${start_dt.toISOString()}`);
-    queryParams.append('start_interval', `lt.${end_dt.toISOString()}`);
+    // Monta string YYYY-MM-01T00:00:00 sem timezone
+    const start_dt = `${year}-${String(monthNumber).padStart(2, '0')}-01T00:00:00`;
+    console.log('month', start_dt);
+    queryParams.append('start_interval', `eq.${start_dt}`);
   }
 }
 

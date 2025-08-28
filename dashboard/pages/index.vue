@@ -38,11 +38,11 @@
 
   <v-container v-if="selectedNode">
     <v-row> 
-      <v-col cols="4">Teste</v-col>
-      <v-col cols="4">Teste</v-col>
-      <v-col cols="4">
-        <Lineplot :filters="filters" :selectedNode="selectedNode"/>
-     </v-col> 
+      <v-col cols="2">Teste</v-col>
+      <v-col cols="5">Teste</v-col>
+<v-col cols="5">
+  <Lineplot :filters="filters" :selectedNode="selectedNode"/>
+</v-col>
     </v-row>
      
   </v-container>
