@@ -41,3 +41,20 @@ export function calculateEdgeBottom(deltaArray, deltaName) {
     const totalEvents = filtered.reduce((sum, d) => sum + (d.count_events || 0), 0);
     return totalEvents === 0 ? "sem dados" : `${totalEvents} eventos`;
 }
+
+
+export function formatDateTime(value) {
+    if (!value) return "";
+    const date = typeof value === "string" ? new Date(value) : value;
+
+    const pad = (n) => String(n).padStart(2, "0");
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}

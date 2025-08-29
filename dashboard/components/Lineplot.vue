@@ -1,6 +1,6 @@
 <template>
   <v-container>
-   <h3>{{this.selectedNode?.delta_display_name || ''}}</h3>
+   <h3>Evolução do Tempo</h3>
     <label>Selecione o intervalo de datas:</label>
     <v-range-slider
       v-model="range"
@@ -165,19 +165,18 @@ export default {
           grouped[key].counts.push(item.count_events);
         });
 
-        const chartData = { 
-          labels: [],        // agora vai ser start_interval
-          ends: [],          // guardamos também os end_interval
-          datasets: [{ label: delta, data: [] }] 
+          const chartData = {
+          labels: [],
+          seriesDelta: [],   // média do tempo
+          seriesCount: []    // contagem de pessoas
         };
 
         Object.values(grouped)
           .sort((a, b) => new Date(a.start) - new Date(b.start))
           .forEach(g => {
-            const mean = combinedMean(g.values, g.counts);
-            // Combina start e end para o label
             chartData.labels.push(this.formatInterval(g.start, g.end));
-            chartData.datasets[0].data.push(mean);
+            chartData.seriesDelta.push(combinedMean(g.values, g.counts));
+            chartData.seriesCount.push(g.counts.reduce((a,b) => a+b, 0)); // soma total de pessoas
           });
 
         this.chartData = chartData;
@@ -202,42 +201,44 @@ export default {
     }
   },
   computed: {
-    series() {
-      const ds = this.chartData.datasets[0];
-      return [
-        {
-          name: ds.label,
-          data: ds.data.map((value, i) => ({
-            x: this.chartData.labels[i],
-            y: value
-          }))
-        }
-      ];
-    },
-    chartOptions() {
-      return {
-        chart: { type: 'line', height: 350, zoom: { enabled: false }},
-        xaxis: { 
-            type: 'category',
-              labels: {
-              rotate: -45,
-              formatter: (val, index) => {
-                console.log('format', val, index)
-                if (index == 0) return '';
-                return val;
-              }
-            }
+   series() {
+    return [
+      {
+        name: 'Tempo médio (minutos)',
+        type: 'line',
+        data: this.chartData.seriesDelta
+      },
+      {
+        name: 'Contagem de pessoas',
+        type: 'line', // ou 'column' se quiser barras
+        data: this.chartData.seriesCount
+      }
+    ];
+  },
+  chartOptions() {
+    return {
+      chart: { type: 'line', height: 350, stacked: false },
+      stroke: { width: [3, 3] },
+      xaxis: {
+        categories: this.chartData.labels,
+        labels: { rotate: -45 }
+      },
+      yaxis: [
+        { 
+          title: { text: 'Tempo médio (minutos)' },
+          labels: { formatter: val => val.toFixed(2) }
         },
-        yaxis: { title: { text: 'Valor médio (minutos)' }, labels: {
-          formatter: (val) => val.toFixed(2) // força 2 casas decimais
-        }},
-        stroke: { curve: 'smooth' },
-        dataLabels: { enabled: false },
-        title: { text: '', align: 'left' },
-        grid: { row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.5 } },
-   
-      };
-    }
+        { 
+          opposite: true, // eixo direito
+          title: { text: 'Contagem de pessoas' },
+          labels: { formatter: val => val.toFixed(0) }
+        }
+      ],
+      tooltip: { shared: true },
+      dataLabels: { enabled: false },
+      grid: { row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.5 } }
+    };
+  }
   }
 };
 </script>

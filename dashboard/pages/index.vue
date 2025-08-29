@@ -38,11 +38,16 @@
 
   <v-container v-if="selectedNode">
     <v-row> 
-      <v-col cols="2">Teste</v-col>
-      <v-col cols="5">Teste</v-col>
-<v-col cols="5">
-  <Lineplot :filters="filters" :selectedNode="selectedNode"/>
-</v-col>
+      <v-col cols="2"><Details :flowData="flowData" :selectedNode="selectedNode" /></v-col>
+      <v-col cols="5">
+      <Boxplot 
+        :flowData="flowData" 
+        :selectedNode="selectedNode" 
+      />
+    </v-col>
+    <v-col cols="5">
+      <Lineplot :filters="filters" :selectedNode="selectedNode"/>
+    </v-col>
     </v-row>
      
   </v-container>
@@ -57,6 +62,9 @@ import Flow from '~/components/Flow.vue';
 import { postgrestFetch } from '~/utils/postgrestFetch.js';
 import { timeFilters, registerTimeFilters } from '~/components/filters/filters.js';
 import Lineplot from '~/components/Lineplot.vue';
+import Boxplot from '~/components/Boxplot.vue';
+import Details from '~/components/Details.vue';
+
 
 export default {
   components: { RiskFilter, TimeFilter, Flow },
@@ -144,6 +152,8 @@ export default {
 
       this.selectedNode = {
         delta_name: deltaName,
+        delta_display_start: edgeObj.display_name_start.replace(/\n/g, ''),
+        delta_display_end: edgeObj.display_name_end.replace(/\n/g, ''),
         delta_display_name: deltaDisplayName
       };
     }
