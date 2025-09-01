@@ -207,12 +207,15 @@ export default {
     eventHandlers() {
       return {
         "node:click": ({ node }) => {
-          console.log(`🔵 Nó clicado: ${node}`);
-          this.$emit("node-clicked", node); // Emite para o pai
+          const nodeData = this.nodes[node]     // pega os dados do nó
+          const originalItem = nodeData.raw     // aqui tá o objeto do JSON
+          console.log("🔵 Nó clicado:", originalItem)
+          this.$emit("node-clicked", originalItem)
         },
         "edge:click": ({ edge }) => {
-          console.log(`🟠 Aresta clicada: ${edge}`);
-          this.$emit("edge-clicked", edge); // Emite para o pai
+          const edgeData = this.edges[edge]
+          console.log("🟠 Aresta clicada:", edgeData.raw || edgeData)
+          this.$emit("edge-clicked", edgeData.raw || edgeData)
         }
       }
     }
@@ -267,6 +270,7 @@ export default {
             name: item.display_name,
             labelAbove: calculateEdgeTop(deltas, item.delta_name),
             labelBelow: calculateEdgeBottom(deltas, item.delta_name),
+            raw: item
           };
           layouts.nodes[item.display_name] = {
             x: item.start_x || 0,
@@ -280,6 +284,7 @@ export default {
               name: item.display_name_start,
               labelAbove: '',
               labelBelow: '',
+              raw: item
             };
             layouts.nodes[item.display_name_start] = {
               x: item.start_x || 0,
@@ -305,7 +310,8 @@ export default {
             source: item.display_name_start,
             target: item.display_name_end,
             labelAbove: calculateEdgeTop(deltas, item.delta_name),
-            labelBelow: calculateEdgeBottom(deltas, item.delta_name)
+            labelBelow: calculateEdgeBottom(deltas, item.delta_name),
+            raw: item
           };
         }
 

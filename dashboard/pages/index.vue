@@ -141,7 +141,18 @@ export default {
     },
 
     handleNodeClick(node) {
-      console.log("Recebido do filho, nó clicado:", node);
+      // Se veio como string, parseia
+      const nodeObj = typeof node === "string" ? JSON.parse(node) : node;
+
+      // Pega os campos do item original
+      const deltaName = nodeObj.delta_name;
+      const deltaDisplayName = nodeObj.display_name.replace(/\n/g, '');
+
+      this.selectedNode = {
+        delta_name: deltaName,
+        delta_display_name: deltaDisplayName,
+        raw: nodeObj // se quiser guardar tudo
+      };
     },
     handleEdgeClick(edge) {
       // Parse se for string

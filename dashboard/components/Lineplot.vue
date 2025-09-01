@@ -93,9 +93,11 @@ export default {
                       s.getFullYear() === e.getFullYear();
 
       if (sameDay) {
-        return `${pad(s.getDate())}/${pad(s.getMonth()+1)} ${pad(s.getHours())}:00-${pad(e.getHours())}:00`;
+        // Ex.: 25/08 0h-5h
+        return `${pad(s.getDate())}/${pad(s.getMonth()+1)} ${s.getHours()}h - ${e.getHours()}h`;
       } else {
-        return `${pad(s.getDate())}/${pad(s.getMonth()+1)} ${pad(s.getHours())}:00 - ${pad(e.getDate())}/${pad(e.getMonth()+1)} ${pad(e.getHours())}:00`;
+        // Ex.: 25/08 0h - 26/08 0h
+        return `${pad(s.getDate())}/${pad(s.getMonth()+1)} ${s.getHours()}h - ${pad(e.getDate())}/${pad(e.getMonth()+1)} ${e.getHours()}h`;
       }
     },
 
@@ -221,7 +223,7 @@ export default {
       stroke: { width: [3, 3] },
       xaxis: {
         categories: this.chartData.labels,
-        labels: { rotate: -45 }
+        tickPlacement: "between",
       },
       yaxis: [
         { 
@@ -249,4 +251,11 @@ export default {
   padding: 10px 36px;
   white-space: nowrap;
 }
+
+
+.apexcharts-svg {
+    overflow: visible;
+}
+
+
 </style>
