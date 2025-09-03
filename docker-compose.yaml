@@ -102,6 +102,23 @@ services:
     networks:
       - main
 
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - dashboard
+      - airflow-webserver
+      - postgrest
+    networks:
+      - main
+
+
+
   dashboard:
     build:
       context: ./dashboard
