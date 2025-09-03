@@ -111,8 +111,9 @@ services:
     volumes:
       - ./common_settings:/app/public
       - ./dashboard:/app
+      - ./dashboard/certs:/app/certs
       - /app/node_modules
-    command: npm run dev
+    command: npm run ${RUN_MODE}
     environment:
       - NODE_ENV=development
       - PORT=5000

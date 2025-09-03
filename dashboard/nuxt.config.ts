@@ -1,4 +1,6 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import fs from 'fs'
+
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
@@ -14,6 +16,7 @@ export default defineNuxtConfig({
     public: {
       postgrestBaseUrl: process.env.POSTGREST_URL || 'http://postgrest:3000', // URL base do PostgREST
     },
-  }
+  },
+   
 
 })
