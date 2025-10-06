@@ -2,7 +2,7 @@
   {
     "table_name": "events_last_4h",
     "class_name": "delta_calculators.delta_by_hour.DeltaByHour",
-    "cron": "20 * * * *",
+    "cron": "5 * * * *",
     "function_params": {
       "last_x_hours": 4
     }
@@ -10,7 +10,7 @@
   {
     "table_name": "events_last_24h",
     "class_name": "delta_calculators.delta_by_hour.DeltaByHour",
-    "cron": "20 * * * *",
+    "cron": "5 * * * *",
     "function_params": {
       "last_x_hours": 24
     }
@@ -28,6 +28,6 @@
   {
     "table_name": "events_by_year",
     "class_name": "delta_calculators.delta_by_year.DeltaByYear",
-    "cron": "20 * * * *"
+    "cron": "5 * * * *"
   }
 ]

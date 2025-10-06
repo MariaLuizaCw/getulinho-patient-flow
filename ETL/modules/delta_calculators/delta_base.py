@@ -90,6 +90,9 @@ class DeltaBase:
         query = query.replace(':delta_name', sequence["delta_name"])
         query = query.replace(':start_event', sequence["start_event"])
         query = query.replace(':end_event', sequence["end_event"])
+        lag_value = sequence.get("lag", 1)  # pega sequence["lag"] ou usa 1 como padrão
+        query = query.replace(':lag_n', str(lag_value))
+
 
         for spare_name, spare_values in spare_columns.items():
             # Gerar a parte de contagem

@@ -10,5 +10,9 @@
   "exame": "event_calculators.exame.ExameCalculator",
   "inicio_internacao1": "event_calculators.internacao.Internacao1Calculator",
   "inicio_internacao2": "event_calculators.internacao.Internacao2Calculator",
-  "alta": "event_calculators.alta.AltaCalculator"
+  "inicio_internacao_sem_atendimento": "event_calculators.internacao.InternacaoSemAtendimentoCalculator",
+  "alta": "event_calculators.alta.AltaCalculator",
+  "alta1": "event_calculators.alta.Alta1Calculator",
+  "alta2": "event_calculators.alta.Alta2Calculator"
+
 }

@@ -328,7 +328,7 @@ export default {
 .graph-container {
   width: 100%;
   /* Ocupa toda a largura disponível */
-  height: 300px;
+  height: 360px;
   /* Ajuste a altura para o valor desejado, ex: 800px */
 }
 </style>

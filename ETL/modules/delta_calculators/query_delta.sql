@@ -21,10 +21,10 @@ WITH risk_class AS (
         a.pacienteid,
         a.event_name AS event_name,
         a.real_date AS real_date,
-        LAG(a.event_name) OVER (PARTITION BY a.pacienteid ORDER BY a.real_date) AS previous_event_name,
-        LAG(a.real_date) OVER (PARTITION BY a.pacienteid ORDER BY a.real_date) AS previous_real_date,
-        LAG(a.spare1) OVER (PARTITION BY a.pacienteid ORDER BY a.real_date) AS spare1_start,
-        LAG(a.spare2) OVER (PARTITION BY a.pacienteid ORDER BY a.real_date) AS spare2_start,
+        LAG(a.event_name, :lag_n) OVER (PARTITION BY a.pacienteid ORDER BY a.real_date) AS previous_event_name,
+        LAG(a.real_date, :lag_n) OVER (PARTITION BY a.pacienteid ORDER BY a.real_date) AS previous_real_date,
+        LAG(a.spare1, :lag_n) OVER (PARTITION BY a.pacienteid ORDER BY a.real_date) AS spare1_start,
+        LAG(a.spare2, :lag_n) OVER (PARTITION BY a.pacienteid ORDER BY a.real_date) AS spare2_start,
         a.spare1 AS spare1_end,  -- spare1 para o start_event
         a.spare2 AS spare2_end,  -- spare2 para o start_event
         a.risk_class

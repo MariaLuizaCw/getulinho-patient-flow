@@ -77,3 +77,48 @@ class Internacao2Calculator():
         )
 
         return df_last_reavaliacao[['pacienteid', 'event_name', 'real_date', 'spare1', 'spare2', 'trunc_date']]
+
+
+
+
+class InternacaoSemAtendimentoCalculator():
+    def __init__(self, base):
+        self.base = base
+
+    def calculate(self):
+        # Extrai dados de internação
+        df_internacao = self.base.extract_data_orm(
+            'boletim',
+            ['pacienteid', 'datainternacao', 'tipoatendimento'],
+            'datainternacao'
+        ).drop_duplicates()
+
+        df_internacao['tipoatendimento'] = df_internacao['tipoatendimento'].str.strip()
+
+        # Extrai dados de atendimentos
+        df_consulta = self.base.extract_data_orm(
+            'atendimentopacientes',
+            ['pacienteid', 'tipoatendimento', 'dthrfim'],
+            'dthrfim',
+            last_x_hours=24
+        ).sort_values('dthrfim', ascending=False)
+
+        df_consulta['tipoatendimento'] = df_consulta['tipoatendimento'].str.strip()
+
+        # Faz LEFT JOIN
+        df_merged = pd.merge(df_internacao, df_consulta, on='pacienteid', how='left')
+
+        # Seleciona as internações sem correspondência em atendimentos
+        df_no_match = df_merged[df_merged['tipoatendimento_y'].isna()]
+
+        # Prepara saída
+        df_no_match = df_no_match.rename(columns={'datainternacao': 'real_date'})
+        df_no_match = df_no_match.assign(
+            event_name='inicio_internacao_sem_atendimento',
+            spare1=lambda d: d['tipoatendimento_x'].str.strip(),
+            spare2=None,
+            real_date=lambda d: pd.to_datetime(d['real_date']),
+            trunc_date=lambda d: pd.to_datetime(d['real_date']).dt.floor('h')
+        )
+
+        return df_no_match[['pacienteid', 'event_name', 'real_date', 'spare1', 'spare2', 'trunc_date']]
